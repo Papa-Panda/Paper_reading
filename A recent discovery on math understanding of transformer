@@ -1,0 +1,18 @@
+A recent discovery combining 3 papers/talks
+
+1/  paper reading
+【【MIT Philippe Rigollett】数学视角下的Transformer】 https://www.bilibili.com/video/BV16ifaYyE8Z/?share_source=copy_web&vd_source=985107e9bc8449878c67f709b64e7ad2
+In one inference, transformer can be seen as graident ascent to some point(the global maximum), which is the output.
+It converges to several vectors, since layers are limited. 
+
+2/ similar to ilya sutskever's talk in nips 2024
+ResNet (Residual Network) is LSTM rotated 90 degrees.
+
+3/ This helps understand deepseek V3
+3.1/ multi-head latent attention makes sure the gradient direction can be correct with less computation.
+    and layers' graident errors can cancel each other.
+    see my implementation: https://github.com/Papa-Panda/Paper_reading/blob/main/DeepSeek%2Battention.ipynb
+3.2/ quantization (fp8) is similar. 
+
+4/ what's next? 
+Anything that helps the attention computation, and keeping the direction of gradient should work. 
