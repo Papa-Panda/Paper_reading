@@ -1,0 +1,77 @@
+from transformers import (
+    AutoTokenizer,
+    AutoModelForSequenceClassification,
+    Trainer,
+    TrainingArguments,
+)
+from datasets import load_dataset
+import torch
+import torch.nn.functional as F
+
+# Load SST-2 dataset
+dataset = load_dataset("glue", "sst2")
+dataset = dataset.map(lambda x: {'labels': x['label']}, remove_columns=['label'])
+
+# Load teacher and student
+teacher_model_name = "bert-large-uncased"
+student_model_name = "distilbert-base-uncased"
+
+teacher = AutoModelForSequenceClassification.from_pretrained(teacher_model_name, num_labels=2)
+student = AutoModelForSequenceClassification.from_pretrained(student_model_name, num_labels=2)
+
+tokenizer = AutoTokenizer.from_pretrained(student_model_name)
+
+# Tokenize data
+def tokenize(example):
+    return tokenizer(example["sentence"], truncation=True, padding="max_length", max_length=128)
+
+tokenized = dataset.map(tokenize, batched=True)
+tokenized = tokenized.remove_columns(["sentence"]).with_format("torch")
+
+# Freeze teacher model
+teacher.eval()
+for param in teacher.parameters():
+    param.requires_grad = False
+
+# Define distillation loss
+def distillation_loss(student_logits, teacher_logits, true_labels, alpha=0.5, temperature=2.0):
+    loss_ce = F.cross_entropy(student_logits, true_labels)
+    loss_kl = F.kl_div(
+        F.log_softmax(student_logits / temperature, dim=-1),
+        F.softmax(teacher_logits / temperature, dim=-1),
+        reduction="batchmean"
+    ) * (temperature ** 2)
+    return alpha * loss_ce + (1 - alpha) * loss_kl
+
+# Custom Trainer
+class DistillationTrainer(Trainer):
+    def compute_loss(self, model, inputs, return_outputs=False):
+        labels = inputs.get("labels")
+        with torch.no_grad():
+            teacher_outputs = teacher(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"])
+        student_outputs = model(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"])
+        loss = distillation_loss(student_outputs.logits, teacher_outputs.logits, labels)
+        return (loss, student_outputs) if return_outputs else loss
+
+# Training
+args = TrainingArguments(
+    output_dir="./distilled",
+    per_device_train_batch_size=16,
+    per_device_eval_batch_size=64,
+    num_train_epochs=3,
+    learning_rate=5e-5,
+    evaluation_strategy="epoch",
+    save_strategy="no",
+    logging_dir="./logs",
+    report_to="none"
+)
+
+trainer = DistillationTrainer(
+    model=student,
+    args=args,
+    train_dataset=tokenized["train"],
+    eval_dataset=tokenized["validation"],
+    tokenizer=tokenizer
+)
+
+trainer.train()
