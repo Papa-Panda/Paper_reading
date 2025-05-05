@@ -13,7 +13,13 @@ useful when predicting P99 latency
 1.3 using utilization to predict others like error percentage
 similar to P99 latency (see 1.2)
 (need an empirical obseravtion of latency vs error percentage)
-how to understand error percentage? Due to saturation etc
+how to understand error percentage? Due to saturation of utilizations, also correlates with latency 
 
 2/ USL is just a tool to understand the pattern; 
 It can help feature engineering; but best to predict using pure ML tools
+
+3/ nontrivial theory: 
+Only two: 
+Little's Law: N(concurrency) = X(throughput) * R(serving time)
+Amadhl's Law/USL: relative throughput = N /(1 + \alpha * (N - 1) + \beta * N * (N-1))
+
