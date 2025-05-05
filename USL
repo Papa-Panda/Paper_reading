@@ -1,0 +1,19 @@
+A few thoughts on Universal Scalability Law
+from https://chatgpt.com/c/6816c505-9adc-800e-b97a-795ae3c9dcb9
+1/ Major problems it helps to understand
+1.1 using utilization to predict workload
+because utilization is almost linear with concurrency (= QPS * avg latency)
+(assuming avg latency does not vary much)
+
+1.2 using utilization to predict latency
+accurate when predicting avg latency
+useful when predicting P99 latency
+(need an empirical obseravtion of latency distribution)
+
+1.3 using utilization to predict others like error percentage
+similar to P99 latency (see 1.2)
+(need an empirical obseravtion of latency vs error percentage)
+how to understand error percentage? Due to saturation etc
+
+2/ USL is just a tool to understand the pattern; 
+It can help feature engineering; but best to predict using pure ML tools
