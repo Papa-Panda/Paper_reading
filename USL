@@ -23,5 +23,5 @@ It can help feature engineering; but best to predict using pure ML tools
 3/ nontrivial theory: 
 Only two: 
 Little's Law: N(concurrency) = X(throughput) * R(serving time)
-Amadhl's Law/USL: relative throughput = N /(1 + \alpha * (N - 1) + \beta * N * (N-1))
+Amadhl's Law or USL: relative throughput = N /(1 + \alpha * (N - 1) + \beta * N * (N-1))
 
