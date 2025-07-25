@@ -1,0 +1,9 @@
+# how to calculate upgrade intention
+
+Let's say 
+
+P(upgrade) = P(upgrade|improvement) * P(improvement)
+
+P(improvement) can be measured (using)
+
+P(upgrade|improvement) can be verified with customers
