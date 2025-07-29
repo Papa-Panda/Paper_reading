@@ -3,5 +3,13 @@
 # autoscaling talks
 
 # autoscaling papers
+# netflix
+# 2013, overall: https://netflixtechblog.com/scryer-netflixs-predictive-auto-scaling-engine-a3f8fc922270
+# 2020, flink: https://youtu.be/NV0jvA5ZDNc
+# 2025, overall: https://aws.plainenglish.io/how-netflix-hyperscales-aws-inside-its-200m-user-infrastructure-with-auto-scaling-chaos-80b3ff9f1ede
 
 # load testing
+
+# reinforcement learning and target tracking
+1/ goal is to design a simple target tracking algo
+2/ 
