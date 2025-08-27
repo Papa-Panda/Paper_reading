@@ -1,0 +1,6 @@
+2/ Is it possible to use geneative model to hack an existing ML model? 
+I think so. 
+
+1/ is information laundering loss function a special form of certain loss function like KL(p, q)?
+https://arxiv.org/pdf/2009.06112
+So optimal solution the paper above can be generated naturally. 
